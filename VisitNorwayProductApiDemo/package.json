@@ -1,0 +1,13 @@
+{
+  "name": "VisitNorwayProductApiDemo",
+  "version": "0.0.0",
+  "description": "VisitNorwayProductApiDemo",
+  "main": "server.js",
+  "author": {
+    "name": "joachim.lovf",
+    "email": ""
+  },
+  "dependencies":{
+	"express": "4.0.0"
+  }
+}

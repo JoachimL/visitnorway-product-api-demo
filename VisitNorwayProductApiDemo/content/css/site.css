@@ -1,0 +1,15 @@
+﻿body {
+    min-height: 100%;
+}
+
+.header {
+    height: 100px,
+}
+
+.google-map {
+    min-height: 100%;
+    position: absolute;
+    top: 0;
+    left:0;
+    padding: 100px;
+}

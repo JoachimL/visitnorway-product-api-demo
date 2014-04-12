@@ -30,9 +30,19 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="content\js\app.js" />
     <Compile Include="server.js" />
+    <Content Include="content\css\site.css" />
+    <Content Include="content\images\visitnorway.png" />
+    <Content Include="content\index.html" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="content\" />
+    <Folder Include="content\css\" />
+    <Folder Include="content\images\" />
+    <Folder Include="content\js\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
   <ProjectExtensions>

@@ -2,15 +2,22 @@
 var http = require( 'http' );
 var app = express();
 
+app.use( express.static( __dirname + '/content' ) );
+
 app.get( '/products', function ( req, res ) {
-    var distance = req.params.dist;
-    var latitude = req.params.latitude;
-    var longitude = req.params.longitude;
-    var limit = req.params.limit;
+    console.log( req.params );
+    var distance = req.query.distance;
+    var latitude = req.query.latitude;
+    var longitude = req.query.longitude;
+    var language = req.query.language;
+    if ( !language ) {
+        language = "no";
+    }
+    var limit = req.query.limit;
     if ( !limit ) {
         limit = 100;
     }
-    var url = "http://product.test.visitnorway.com/api/products?sort=distance&latitude=" + latitude; //+ "&longitude=" + longitude + "&withinDistance=" + distance + "&limit=" & limit;
+    var url = "http://product.test.visitnorway.com/api/products?sort=distance&latitude=" + latitude + "&longitude=" + longitude + "&withinDistance=" + distance.toString() + "&limit=" + limit.toString();
     console.log( "Getting " + url );
     http.get( url, function ( response ) {
         // data is streamed in chunks from the server
@@ -20,10 +27,12 @@ app.get( '/products', function ( req, res ) {
             route;
 
         response.on( "data", function ( chunk ) {
+            console.log( "Got data..." );
             buffer += chunk;
         });
 
         response.on( "end", function ( err ) {
+            console.log( "Data done." );
             res.send( buffer );
         });
     });

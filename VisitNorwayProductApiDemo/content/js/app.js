@@ -64,14 +64,36 @@
     var myControl = document.getElementById( 'header' );
     map.controls[google.maps.ControlPosition.TOP_LEFT].push( myControl );
 
+    function setMarkersForDefaultLocation(){
+        console.log('Unable to get position, using default.');
+        addMarkersForNearbyPois(map.getCenter());
+    }
+
+    function addClientPositionMarker(position){
+        console.log('Adding client position marker');
+        myloc = new google.maps.Marker({
+            clickable: false,
+            icon: new google.maps.MarkerImage('//maps.gstatic.com/mapfiles/mobile/mobileimgs2.png',
+                                                            new google.maps.Size(22,22),
+                                                            new google.maps.Point(0,18),
+                                                            new google.maps.Point(11,11)),
+            shadow: null,
+            zIndex: 999,
+            map: map,
+            title: 'My position'
+        });
+        myloc.setPosition(position);
+    }
+
+    function setMarkersForClientsPosition(position){
+        var clientPosition = new google.maps.LatLng( position.coords.latitude, position.coords.longitude );
+        addClientPositionMarker(clientPosition);
+        addMarkersForNearbyPois(clientPosition);
+    }
 
     navigator.geolocation.getCurrentPosition(
-        function(position){
-            var clientPosition = new google.maps.LatLng( position.coords.latitude, position.coords.longitude );
-            addMarkersForNearbyPois(clientPosition);
-        }, function(){
-            addMarkersForNearbyPois(map.getCenter());
-        });
+        setMarkersForClientsPosition, 
+        setMarkersForDefaultLocation);
 
 });
 

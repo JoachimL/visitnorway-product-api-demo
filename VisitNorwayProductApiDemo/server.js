@@ -5,7 +5,6 @@ var app = express();
 app.use( express.static( __dirname + '/content' ) );
 
 app.get( '/products', function ( req, res ) {
-    console.log( req.params );
     var distance = req.query.distance;
     var latitude = req.query.latitude;
     var longitude = req.query.longitude;
@@ -38,7 +37,7 @@ app.get( '/products', function ( req, res ) {
     });
 });
 
-var server = app.listen( 3000, function () {
+var server = app.listen( 80, function () {
     console.log( 'Listening on port %d', server.address().port );
 });
 

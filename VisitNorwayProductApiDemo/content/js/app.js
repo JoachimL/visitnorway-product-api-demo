@@ -22,16 +22,13 @@
         removeCurrentMarkers();
 
         var target = document.getElementById('google-map');
-        var spinner = new Spinner({lined: 13}).spin(target);
+        var spinner = new Spinner({lined: 13, color: ['#f00', '#fff', '#00f']}).spin(target);
         $.getJSON( url, function ( data ) {
-            console.log('Got ' + data.length.toString() + ' products.');
             $.each( data, function ( key, val ) {
                  var contentString = '<div id="content">'+
-                      '<div id="siteNotice">'+
-                      '</div>'+
-                      '<h1 id="firstHeading" class="firstHeading">' + val.name + '</h1>'+
+                      '<a href="http://test.visitnorway.com/product/?pid=' + val.id.toString() + '"><h1 id="firstHeading" class="firstHeading">' + val.name + '</h1></a>'+
                       '<div id="bodyContent">'+
-                      getImageFrom(val)
+                      getImageFrom(val) +
                       '</div>'+
                       '</div>';
 
@@ -70,8 +67,8 @@
 
     navigator.geolocation.getCurrentPosition(
         function(position){
-            var mapLocation = new google.maps.LatLng( position.coords.latitude, position.coords.longitude );
-            addMarkersForNearbyPois(mapLocation);
+            var clientPosition = new google.maps.LatLng( position.coords.latitude, position.coords.longitude );
+            addMarkersForNearbyPois(clientPosition);
         }, function(){
             addMarkersForNearbyPois(map.getCenter());
         });

@@ -8,39 +8,24 @@
     var map = new google.maps.Map( document.getElementById( "google-map" ),
         mapOptions );
 
-    google.maps.event.addListener( map, 'click', function ( event ) {
-
+    function removeCurrentMarkers() {
         for(var ii = 0; ii < products.length; ii = ii + 1) {
-            var product = products.pop();
-            product.map = null;
+            var productMarker = products.pop();
+            productMarker.setMap(null);
         }
+    }
 
-
-        var lat = event.latLng.lat();
-        var long = event.latLng.lng();
-        var url = "/products?language=no&latitude=" + lat + "&longitude=" + long + "&distance=" + 30000;
-        console.log( "Getting " + url );
+    function addMarkersForNearbyPois(position){
+        var url = "/products?language=no&latitude=" + position.lat() + "&longitude=" + position.lng() + "&distance=" + 30000 + "&limit=50";
         var latlngbounds = new google.maps.LatLngBounds();
+
+        removeCurrentMarkers();
+
+        var target = document.getElementById('google-map');
+        var spinner = new Spinner({lined: 13}).spin(target);
         $.getJSON( url, function ( data ) {
+            console.log('Got ' + data.length.toString() + ' products.');
             $.each( data, function ( key, val ) {
-
-                var shape, image;
-                if(val.image && val.image.url) {
-                    image = {
-                        url: val.image.url,
-                        // This marker is 20 pixels wide by 32 pixels tall.
-                        size: new google.maps.Size(20, 32),
-                        // The origin for this image is 0,0.
-                        origin: new google.maps.Point(0,0),
-                        // The anchor for this image is the base of the flagpole at 0,32.
-                        anchor: new google.maps.Point(0, 32)
-                      };
-                     shape = {
-                          coord: [1, 1, 1, 20, 18, 20, 18 , 1],
-                          type: 'poly'
-                      };
-                }
-
                  var contentString = '<div id="content">'+
                       '<div id="siteNotice">'+
                       '</div>'+
@@ -57,9 +42,7 @@
                 var marker = new google.maps.Marker( {
                     position: new google.maps.LatLng(val.geoLocation.latitude, val.geoLocation.longitude),
                     map: map,
-                    title: val.name,
-                    shape: shape,
-                    image: image
+                    title: val.name
                 });
 
                 google.maps.event.addListener(marker, 'click', function() {
@@ -71,11 +54,27 @@
                 products.push(marker);
             });
             map.fitBounds(latlngbounds);
+        })
+        .done(function(){
+            spinner.stop();
         });
+    }
+
+    google.maps.event.addListener( map, 'click', function ( event ) {        
+        addMarkersForNearbyPois(event.latLng);
     });
 
     var myControl = document.getElementById( 'header' );
     map.controls[google.maps.ControlPosition.TOP_LEFT].push( myControl );
+
+
+    navigator.geolocation.getCurrentPosition(
+        function(position){
+            var mapLocation = new google.maps.LatLng( position.coords.latitude, position.coords.longitude );
+            addMarkersForNearbyPois(mapLocation);
+        }, function(){
+            addMarkersForNearbyPois(map.getCenter());
+        });
 
 });
 
